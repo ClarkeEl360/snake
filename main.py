@@ -15,6 +15,7 @@ CELL_SIZE = 10
 direction = 1
 update_snake = 0
 score = 0
+speed = 0
 
 snake_pos = [[int(config.SCREEN_WIDTH / 2), int(config.SCREEN_HEIGHT / 2)]]
 snake_pos.append([int(config.SCREEN_WIDTH / 2), int(config.SCREEN_HEIGHT / 2) + CELL_SIZE])
@@ -56,14 +57,20 @@ while running:
         elif event.type == pygame.KEYDOWN:
             if event.key == pygame.K_w and direction != 3:
                 direction = 1
-            elif event.key == pygame.K_w and direction != 4:
+            elif event.key == pygame.K_d and direction != 4:
                 direction = 2
-            elif event.key == pygame.K_w and direction != 1:
+            elif event.key == pygame.K_s and direction != 1:
                 direction = 3
-            elif event.key == pygame.K_w and direction != 2:
+            elif event.key == pygame.K_a and direction != 2:
                 direction = 4
+            if event.key == pygame.K_UP:
+                speed -= 5
+            if event.key == pygame.K_DOWN:
+                speed += 5
+            if event.key == pygame.K_0:
+                speed = 0
             
-    if update_snake > 59:
+    if update_snake > 59 + speed:
         update_snake = 0
 
         head_x, head_y = snake_pos[0]
