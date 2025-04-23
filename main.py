@@ -16,7 +16,8 @@ direction = 1
 update_snake = 0
 score = 0
 
-snake_pos = ([int(config.SCREEN_WIDTH / 2), int(config.SCREEN_HEIGHT / 2) + CELL_SIZE])
+snake_pos = [[int(config.SCREEN_WIDTH / 2), int(config.SCREEN_HEIGHT / 2)]]
+snake_pos.append([int(config.SCREEN_WIDTH / 2), int(config.SCREEN_HEIGHT / 2) + CELL_SIZE])
 snake_pos.append([int(config.SCREEN_WIDTH / 2), int(config.SCREEN_HEIGHT / 2) + CELL_SIZE * 2])
 snake_pos.append([int(config.SCREEN_WIDTH / 2), int(config.SCREEN_HEIGHT / 2) + CELL_SIZE * 3])
 
@@ -61,3 +62,48 @@ while running:
                 direction = 3
             elif event.key == pygame.K_w and direction != 2:
                 direction = 4
+            
+    if update_snake > 59:
+        update_snake = 0
+
+        head_x, head_y = snake_pos[0]
+
+        if direction == 1:
+            head_y -= CELL_SIZE
+        elif direction == 2:
+            head_x += CELL_SIZE
+        elif direction == 3:
+            head_y += CELL_SIZE
+        elif direction == 4:
+            head_x -= CELL_SIZE
+        
+
+        snake_pos.insert(0, [head_x, head_y])
+        snake_pos.pop()
+
+        if snake_pos[0] == apple_pos:
+            apple_pos = [random.randint(0, config.SCREEN_WIDTH // CELL_SIZE - 1) * CELL_SIZE, random.randint(0, config.SCREEN_HEIGHT // CELL_SIZE - 1) * CELL_SIZE]
+
+            snake_pos.append(snake_pos[-1])
+            score += 1
+
+        if head_x < 0 or head_x >= config.SCREEN_WIDTH or head_y < 0 or head_y >= config.SCREEN_HEIGHT:
+            running = False
+
+    for i in range(len(snake_pos)):
+        segment = snake_pos[i]
+        if i == 0:
+            pygame.draw.rect(screen, BODY_OUTER, (segment[0], segment[1], CELL_SIZE, CELL_SIZE))
+            pygame.draw.rect(screen, RED, (segment[0] + 1, segment[1] + 1, CELL_SIZE - 2, CELL_SIZE - 2))
+            
+        else:
+            pygame.draw.rect(screen, BODY_OUTER, (segment[0], segment[1], CELL_SIZE, CELL_SIZE))
+            pygame.draw.rect(screen, BODY_INNER, (segment[0] + 1, segment[1] + 1, CELL_SIZE - 2, CELL_SIZE - 2))
+        
+    update_snake += 1
+
+    pygame.display.flip()
+
+
+pygame.quit()
+sys.exit()
